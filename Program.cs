@@ -1,41 +1,46 @@
+using Microsoft.AspNetCore.Mvc;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+// Säg åt appen att lyssna på port 8080 (Standard för AWS)
+builder.WebHost.UseUrls("http://0.0.0.0:8080");
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
+// En startsida så vi ser att det funkar direkt på länken
+app.MapGet("/", () => "API:et är igång! Lägg till /encrypt?text=test&shift=1 i adressen.");
 
-app.UseHttpsRedirection();
-
-var summaries = new[]
+// Endpoint 1: Kryptera
+app.MapGet("/encrypt", ([FromQuery] string text, [FromQuery] int shift) =>
 {
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
+    return Results.Ok(CipherHelper.CaesarCipher(text, shift));
+});
 
-app.MapGet("/weatherforecast", () =>
+// Endpoint 2: Avkryptera
+app.MapGet("/decrypt", ([FromQuery] string text, [FromQuery] int shift) =>
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    return Results.Ok(CipherHelper.CaesarCipher(text, -shift));
+});
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+// Hjälpklass
+public static class CipherHelper
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    public static string CaesarCipher(string input, int shift)
+    {
+        if (string.IsNullOrEmpty(input)) return "";
+        
+        char[] buffer = input.ToCharArray();
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            char letter = buffer[i];
+            if (char.IsLetter(letter))
+            {
+                char offset = char.IsUpper(letter) ? 'A' : 'a';
+                buffer[i] = (char)((((letter + shift) - offset) % 26 + 26) % 26 + offset);
+            }
+        }
+        return new string(buffer);
+    }
 }
