@@ -2,8 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Säg åt appen att lyssna på port 8080 (Standard för AWS)
-builder.WebHost.UseUrls("http://0.0.0.0:8080");
+// Vi sätter porten till 5000
+builder.WebHost.UseUrls("http://0.0.0.0:5000");
 
 var app = builder.Build();
 
