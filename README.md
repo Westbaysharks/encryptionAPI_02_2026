@@ -6,7 +6,7 @@ Tjänsten låter användare kryptera text genom att skicka meddelanden och en "s
 
 Status: Live på AWS
 
-Miljö: Elastic Beanstalk (eu-west-3)
+Miljö: Elastic Beanstalk
 
 Metod: GET-requests
 
@@ -14,10 +14,10 @@ Metod: GET-requests
 Bas-URL: http://encryptionapp-env.eba-mwtiutss.eu-west-3.elasticbeanstalk.com
 
 # Så här testar du API:et
-Du kan testa API:et direkt i din webbläsare genom att klicka på länkarna nedan eller skriva in dem i adressfältet.
+Du kan testa API:et direkt i din webbläsare genom att förlänga Bas-URL (se ovan) och följande (se nedan) i adressfältet.
 
 1. Kryptera (Encrypt)
-För att kryptera en text använder du /encrypt och anger text samt shift.
+För att kryptera en text använder du /encrypt och anger text [DIN-TEXT] samt shift [ANTAL_STEG].
 
 Format: /encrypt?text=[DIN_TEXT]&shift=[ANTAL_STEG]
 
